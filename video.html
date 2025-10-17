@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Видео материалы - Системы контроля версий</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #121212; 
+            color: #e0e0e0; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        main {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            color: #ffffff;
+        }
+
+        .collection {
+            border-color: #424242;
+        }
+        .collection .collection-item {
+            background-color: #212121;
+            border-color: #424242;
+        }
+        .collection .collection-item a {
+            color: #bb86fc; 
+        }
+        .collection .collection-item a:hover {
+            color: #e3d2f7;
+        }
+
+        table.striped > tbody > tr {
+            border-bottom: none; 
+        }
+
+        table.striped > tbody > tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
+        
+        code {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .main-content {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+        }
+        
+        .content-wrapper {
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-footer {
+            width: 100%;
+            margin-top: auto;
+            background-color: #121212 !important;
+        }
+        
+        .footer-content {
+            text-align: center;
+            padding: 20px 0;
+            color: #e0e0e0;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        ul:not(.browser-default) {
+            padding-left: 0;
+        }
+        
+        ul:not(.browser-default) > li {
+            list-style-type: none;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        ul:not(.browser-default) > li:before {
+            content: "•";
+            color: #bb86fc;
+            position: absolute;
+            left: 0;
+        }
+        
+        .video-card {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #bb86fc;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+        }
+        
+        .system-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 2px;
+            font-size: 0.9em;
+        }
+        
+        .git-badge {
+            background-color: #f14e32;
+            color: white;
+        }
+        
+        .svn-badge {
+            background-color: #8094b8;
+            color: white;
+        }
+        
+        .hg-badge {
+            background-color: #5c89cc;
+            color: white;
+        }
+        
+        .video-description {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        
+        .video-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #bb86fc;
+            text-decoration: none;
+        }
+        
+        .video-link:hover {
+            color: #e3d2f7;
+            text-decoration: underline;
+        }
+        
+        .video-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .placeholder-text {
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="indigo darken-3">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo center"></a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="git.html">Git</a></li>
+                <li><a href="svn.html">SVN</a></li>
+                <li><a href="mercurial.html">Mercurial</a></li>
+                <li><a href="comparison.html">Сравнение</a></li>
+                <li><a href="video.html">Видео</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="git.html">Git</a></li>
+        <li><a href="svn.html">SVN</a></li>
+        <li><a href="mercurial.html">Mercurial</a></li>
+        <li><a href="comparison.html">Сравнение</a></li>
+        <li><a href="install.html">Установка</a></li>
+        <li><a href="video.html">Видео</a></li>
+    </ul>
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <h1>Видео материалы по системам контроля версий</h1>
+            
+            <div class="video-card">
+                <h3><span class="system-badge git-badge">Git</span> - Полный курс для начинающих</h3>
+                
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/W4hoc24K93E" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="video-description">
+                    <h5>Git и GitHub курс для начинающих</h5>
+                    <p>Подробный видеоурок на русском языке по основам работы с Git и GitHub. Отличный старт для тех, кто только начинает работать с системой контроля версий.</p>
+                    <ul>
+                        <li>Установка и настройка Git</li>
+                        <li>Создание и клонирование репозиториев</li>
+                        <li>Основные команды: add, commit, push, pull</li>
+                        <li>Работа с ветками и слияние</li>
+                        <li>Решение конфликтов</li>
+                        <li>Работа с GitHub</li>
+                    </ul>
+                    <a href="https://www.youtube.com/watch?v=W4hoc24K93E" class="video-link" target="_blank">Смотреть на YouTube</a>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <h3><span class="system-badge svn-badge">SVN</span> - Основы Apache Subversion</h3>
+                
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/YRieW3mhh1s" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="video-description">
+                    <h5>SVN Tutorial - Основы работы с Subversion</h5>
+                    <p>Подробное руководство на русском языке по работе с Apache Subversion. Идеально подходит для понимания концепций централизованных систем контроля версий.</p>
+                    <ul>
+                        <li>Основы централизованных СКВ</li>
+                        <li>Установка SVN клиента</li>
+                        <li>Работа с рабочими копиями</li>
+                        <li>Коммиты и обновления</li>
+                        <li>Ветвление в SVN</li>
+                        <li>Базовое администрирование</li>
+                    </ul>
+                    <a href="https://www.youtube.com/watch?v=YRieW3mhh1s" class="video-link" target="_blank">Смотреть на YouTube</a>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <h3><span class="system-badge hg-badge">Mercurial</span> - Введение в систему</h3>
+                
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/5evzU-Iq8UQ" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="video-description">
+                    <h5>Mercurial - распределенная система контроля версий</h5>
+                    <p>Введение в Mercurial на русском языке - простую и эффективную распределенную систему контроля версий. Показывает основные команды и рабочие процессы.</p>
+                    <ul>
+                        <li>Установка Mercurial</li>
+                        <li>Базовые команды hg</li>
+                        <li>Создание и клонирование репозиториев</li>
+                        <li>Работа с ветками</li>
+                        <li>Слияние изменений</li>
+                        <li>Работа с удаленными репозиториями</li>
+                    </ul>
+                    <a href="https://www.youtube.com/watch?v=5evzU-Iq8UQ" class="video-link" target="_blank">Смотреть на YouTube</a>
+                </div>
+            </div>
+
+
+            <div class="video-card">
+                <h3>Дополнительные ресурсы для изучения</h3>
+                
+                <div class="video-description">
+                    <h5>Полезные каналы на русском языке:</h5>
+                    <ul>
+                        <li><strong>Владилен Минин</strong> - качественные курсы по программированию</li>
+                        <li><strong>Хауди Хо™</strong> - уроки по Git и другим технологиям</li>
+                        <li><strong>Simple Code</strong> - практические руководства</li>
+                        <li><strong>Гоша Дударь</strong> - обучающие материалы для начинающих</li>
+                    </ul>
+                    
+                    <h5>Рекомендуемые курсы:</h5>
+                    <ul>
+                        <li>Git Complete: The definitive guide (русская версия)</li>
+                        <li>SVN для корпоративной разработки</li>
+                        <li>Mercurial для начинающих</li>
+                        <li>Системы контроля версий: полное руководство</li>
+                    </ul>
+                    
+                    <h5>Официальная документация:</h5>
+                    <ul>
+                        <li><a href="https://git-scm.com/book/ru/v2" class="video-link" target="_blank">Официальная документация Git на русском</a></li>
+                        <li><a href="https://subversion.apache.org/docs/" class="video-link" target="_blank">Документация Apache Subversion</a></li>
+                        <li><a href="https://www.mercurial-scm.org/guide" class="video-link" target="_blank">Руководство по Mercurial</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer"> 
+        <div class="footer-content">
+            © 2025 Гербулов Р.В.
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+        });
+    </script>
+</body>
+</html>

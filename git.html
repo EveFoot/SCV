@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git - Система контроля версий</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #121212; 
+            color: #e0e0e0; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        main {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            color: #ffffff;
+        }
+
+        .collection {
+            border-color: #424242;
+        }
+        .collection .collection-item {
+            background-color: #212121;
+            border-color: #424242;
+        }
+        .collection .collection-item a {
+            color: #bb86fc; 
+        }
+        .collection .collection-item a:hover {
+            color: #e3d2f7;
+        }
+
+        table.striped > tbody > tr {
+            border-bottom: none; 
+        }
+
+        table.striped > tbody > tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
+        
+        code {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-block {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .main-content {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+        }
+        
+        .content-wrapper {
+            padding: 0 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        
+        .page-footer {
+            width: 100%;
+            margin-top: auto;
+            background-color: #121212 !important;
+        }
+        
+        .footer-content {
+            text-align: center;
+            padding: 20px 0;
+            color: #e0e0e0;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        ul:not(.browser-default) {
+            padding-left: 0;
+        }
+        
+        ul:not(.browser-default) > li {
+            list-style-type: none;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        ul:not(.browser-default) > li:before {
+            content: "•";
+            color: #bb86fc;
+            position: absolute;
+            left: 0;
+        }
+        
+        .feature-card {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #bb86fc;
+        }
+        
+        .git-logo {
+            color: #f14e32;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        /* Стили для компактного сайдбара */
+        .page-nav {
+            position: sticky;
+            top: 100px;
+            align-self: start;
+        }
+        
+        .page-nav-content {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .page-nav-title {
+            color: #bb86fc;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-links li {
+            margin-bottom: 6px;
+        }
+        
+        .nav-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .nav-links a:hover {
+            background: rgba(187, 134, 252, 0.08);
+            color: #e3d2f7;
+            border-color: rgba(187, 134, 252, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .nav-links a.active {
+            background: rgba(187, 134, 252, 0.12);
+            color: #bb86fc;
+            border-color: rgba(187, 134, 252, 0.5);
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(187, 134, 252, 0.2);
+        }
+        
+        .content-main {
+            min-width: 0;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 240px 1fr;
+                gap: 40px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .page-nav {
+                position: static;
+                order: -1;
+            }
+            
+            .page-nav-content {
+                background: rgba(30, 30, 30, 0.8);
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid #333;
+            }
+            
+            .nav-links {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0;
+            }
+            
+            .nav-links a {
+                text-align: center;
+                padding: 12px;
+            }
+            
+            .nav-links a:hover {
+                transform: translateY(-2px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                gap: 20px;
+            }
+            
+            .nav-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links a {
+                padding: 14px;
+            }
+        }
+
+        /* Улучшения для основного контента */
+        .content-main h3 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-top: 2.5rem;
+        }
+
+        .content-main h3:first-of-type {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="indigo darken-3">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo center"></a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="git.html">Git</a></li>
+                <li><a href="svn.html">SVN</a></li>
+                <li><a href="mercurial.html">Mercurial</a></li>
+                <li><a href="comparison.html">Сравнение</a></li>
+                <li><a href="video.html">Видео</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="git.html">Git</a></li>
+        <li><a href="svn.html">SVN</a></li>
+        <li><a href="mercurial.html">Mercurial</a></li>
+        <li><a href="comparison.html">Сравнение</a></li>
+        <li><a href="install.html">Установка</a></li>
+        <li><a href="video.html">Видео</a></li>
+    </ul>
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Компактный сайдбар навигации -->
+            <aside class="page-nav">
+                <div class="page-nav-content">
+                    <div class="page-nav-title">Содержание</div>
+                    <ul class="nav-links">
+                        <li><a href="#what-is-git" class="active">Что такое Git?</a></li>
+                        <li><a href="#key-features">Ключевые особенности</a></li>
+                        <li><a href="#basic-commands">Основные команды</a></li>
+                        <li><a href="#workflow">Рабочий процесс</a></li>
+                        <li><a href="#hosting-platforms">Платформы хостинга</a></li>
+                        <li><a href="#advantages">Преимущества</a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Основной контент -->
+            <div class="content-main">
+                <h1><span class="git-logo">Git</span> - Распределенная система контроля версий</h1>
+                
+                <div class="feature-card" id="what-is-git">
+                    <h3>Что такое Git?</h3>
+                    <p><span class="git-logo">Git</span> — это распределенная система контроля версий, созданная Линусом Торвальдсом в 2005 году для управления разработкой ядра Linux. Сегодня это самая популярная система контроля версий в мире, используемая как для небольших проектов, так и для крупных корпоративных решений.</p>
+                </div>
+
+                <h3 id="key-features">Ключевые особенности Git</h3>
+                
+                <div class="feature-card">
+                    <h5>Распределенная архитектура</h5>
+                    <p>В отличие от централизованных систем (таких как SVN), в Git каждый разработчик имеет полную копию репозитория со всей историей изменений. Это обеспечивает:</p>
+                    <ul>
+                        <li>Работу оффлайн</li>
+                        <li>Высокую скорость операций</li>
+                        <li>Надежность и отказоустойчивость</li>
+                        <li>Гибкие workflows</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h5>Ветвление и слияние</h5>
+                    <p>Git предоставляет мощные инструменты для работы с ветками, что делает процесс разработки более организованным:</p>
+                    <ul>
+                        <li>Легкое создание веток</li>
+                        <li>Быстрое переключение между ветками</li>
+                        <li>Эффективные механизмы слияния</li>
+                        <li>Разрешение конфликтов</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h5>Целостность данных</h5>
+                    <p>Git использует SHA-1 хеши для идентификации и проверки всех объектов в репозитории. Это гарантирует:</p>
+                    <ul>
+                        <li>Невозможность незаметного изменения данных</li>
+                        <li>Целостность истории изменений</li>
+                        <li>Надежное хранение информации</li>
+                    </ul>
+                </div>
+
+                <h3 id="basic-commands">Основные команды Git</h3>
+                
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th>Команда</th>
+                            <th>Описание</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>git init</code></td>
+                            <td>Создание нового репозитория</td>
+                        </tr>
+                        <tr>
+                            <td><code>git clone</code></td>
+                            <td>Клонирование удаленного репозитория</td>
+                        </tr>
+                        <tr>
+                            <td><code>git add</code></td>
+                            <td>Добавление файлов в индекс</td>
+                        </tr>
+                        <tr>
+                            <td><code>git commit</code></td>
+                            <td>Создание коммита с изменениями</td>
+                        </tr>
+                        <tr>
+                            <td><code>git push</code></td>
+                            <td>Отправка изменений в удаленный репозиторий</td>
+                        </tr>
+                        <tr>
+                            <td><code>git pull</code></td>
+                            <td>Получение изменений из удаленного репозитория</td>
+                        </tr>
+                        <tr>
+                            <td><code>git branch</code></td>
+                            <td>Работа с ветками</td>
+                        </tr>
+                        <tr>
+                            <td><code>git merge</code></td>
+                            <td>Слияние веток</td>
+                        </tr>
+                        <tr>
+                            <td><code>git status</code></td>
+                            <td>Просмотр состояния репозитория</td>
+                        </tr>
+                        <tr>
+                            <td><code>git log</code></td>
+                            <td>Просмотр истории коммитов</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 id="workflow">Типичный рабочий процесс в Git</h3>
+                
+                <div class="code-block">
+                    <code>
+# Клонирование репозитория<br>
+git clone https://github.com/user/repository.git<br>
+<br>
+# Создание новой ветки для функциональности<br>
+git checkout -b new-feature<br>
+<br>
+# Внесение изменений в файлы<br>
+# ...<br>
+<br>
+# Добавление изменений в индекс<br>
+git add .<br>
+<br>
+# Создание коммита<br>
+git commit -m "Добавлена новая функциональность"<br>
+<br>
+# Переключение на основную ветку<br>
+git checkout main<br>
+<br>
+# Получение последних изменений<br>
+git pull origin main<br>
+<br>
+# Слияние ветки с новой функциональностью<br>
+git merge new-feature<br>
+<br>
+# Отправка изменений в удаленный репозиторий<br>
+git push origin main
+                    </code>
+                </div>
+
+                <h3 id="hosting-platforms">Популярные платформы для хостинга Git-репозиториев</h3>
+                
+                <ul>
+                    <li><strong>GitHub</strong> - Крупнейшая платформа с социальными функциями</li>
+                    <li><strong>GitLab</strong> - Платформа с возможностью самолистирования</li>
+                    <li><strong>Bitbucket</strong> - Решение от Atlassian с интеграцией Jira</li>
+                    <li><strong>Azure DevOps</strong> - Комплексное решение от Microsoft</li>
+                </ul>
+
+                <h3 id="advantages">Преимущества Git</h3>
+                
+                <div class="feature-card">
+                    <ul>
+                        <li>Высокая производительность</li>
+                        <li>Работа в оффлайн-режиме</li>
+                        <li>Гибкая система ветвления</li>
+                        <li>Широкая экосистема инструментов</li>
+                        <li>Большое сообщество и документация</li>
+                        <li>Кроссплатформенность</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer"> 
+        <div class="footer-content">
+            © 2025 Гербулов Р.В.
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация мобильной навигации
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+            
+            // Плавная прокрутка для навигации
+            document.querySelectorAll('.nav-links a').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Подсветка активного раздела при прокрутке
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('h3, .feature-card');
+                const navItems = document.querySelectorAll('.nav-links a');
+                
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 120;
+                    if (window.scrollY >= sectionTop) {
+                        currentSection = '#' + section.getAttribute('id');
+                    }
+                });
+                
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

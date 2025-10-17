@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Системы контроля версий</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #121212; 
+            color: #e0e0e0; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        main {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            color: #ffffff;
+        }
+
+        .collection {
+            border-color: #424242;
+        }
+        .collection .collection-item {
+            background-color: #212121;
+            border-color: #424242;
+        }
+        .collection .collection-item a {
+            color: #bb86fc; 
+        }
+        .collection .collection-item a:hover {
+            color: #e3d2f7;
+        }
+
+        table.striped > tbody > tr {
+            border-bottom: none; 
+        }
+
+        table.striped > tbody > tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
+        
+        code {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .main-content {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+        }
+        
+        .content-wrapper {
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-footer {
+            width: 100%;
+            margin-top: auto;
+            background-color: #121212 !important;
+        }
+        
+        .footer-content {
+            text-align: center;
+            padding: 20px 0;
+            color: #e0e0e0;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        ul:not(.browser-default) {
+            padding-left: 0;
+        }
+        
+        ul:not(.browser-default) > li {
+            list-style-type: none;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        ul:not(.browser-default) > li:before {
+            content: "•";
+            color: #bb86fc;
+            position: absolute;
+            left: 0;
+        }
+        
+        .info-card {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #bb86fc;
+        }
+        
+        .task-item {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #bb86fc;
+        }
+        
+        .task-item h5 {
+            margin-top: 0;
+            color: #bb86fc;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="indigo darken-3">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo center"></a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="git.html">Git</a></li>
+                <li><a href="svn.html">SVN</a></li>
+                <li><a href="mercurial.html">Mercurial</a></li>
+                <li><a href="comparison.html">Сравнение</a></li>
+                <li><a href="video.html">Видео</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="git.html">Git</a></li>
+        <li><a href="svn.html">SVN</a></li>
+        <li><a href="mercurial.html">Mercurial</a></li>
+        <li><a href="comparison.html">Сравнение</a></li>
+        <li><a href="install.html">Установка</a></li>
+        <li><a href="video.html">Видео</a></li>
+    </ul>
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <h1>Системы контроля версий</h1>
+            <p>Добро пожаловать на сайт о системах контроля версий. Здесь вы найдете информацию о популярных инструментах, их возможностях и отличиях.</p>
+            
+            <div class="info-card">
+                <h3>Что такое система контроля версий?</h3>
+                <p>Система контроля версий позволяет отслеживать изменения, управлять версиями и продуктивно работать в команде. </p>
+                <p>Без СКВ сложно обеспечить стабильность, безопасность и прозрачность разработки, а также избежать ошибок при совместной работе над проектом.     
+                Представьте, что несколько разработчиков работают над созданием одного продуктового модуля для приложения. 
+                Один из них занимается написанием кода для функции обработки данных, другой — разрабатывает интерфейс пользователя, а третий — настраивает серверную часть. 
+                Все эти изменения происходят параллельно, и важно, чтобы изменения не конфликтовали между собой. Система контроля версий позволяет разрешить этот конфликт, отследив, 
+                какие изменения были сделаны кем и когда, а также вернуться к предыдущей версии, если что-то пошло не так. В качестве примера можно привести Git, одну из самых популярных СКВ, 
+                которая используется для управления версиями в проектах с открытым исходным кодом.</p>
+            </div>
+
+            <h3>Какие задачи решает система контроля версий</h3>
+            
+            <div class="task-item">
+                <h5>Отслеживание изменений</h5>
+                <p>СКВ позволяет фиксировать все изменения, внесенные в код, и сохранять их в истории. Так разработчики могут отслеживать, кто и когда вносил изменения, 
+                    и какие именно исправления были сделаны. 
+                    Если после изменений появляется ошибка, можно легко вернуться к предыдущей рабочей версии.</p>
+            </div>
+
+            <div class="task-item">
+                <h5>Решение конфликтов</h5>
+                <p>Когда несколько разработчиков одновременно работают над одним и тем же файлом, может возникать ситуация, когда их изменения конфликтуют. 
+                    Система контроля версий помогает разрешать такие конфликты, автоматизируя слияние изменений и 
+                    предоставляя инструменты для ручной корректировки, если это необходимо.</p>
+            </div>
+
+            <div class="task-item">
+                <h5>Поддержка параллельной разработки</h5>
+                <p>СКВ позволяет разработчикам работать над разными частями проекта одновременно, не мешая друг другу.
+                     Каждый разработчик может создавать ветки для работы над новой функциональностью или исправлением багов, а затем объединить их 
+                     с основной версией проекта, когда работа будет завершена.</p>
+            </div>
+
+            <div class="task-item">
+                <h5>Управление версиями</h5>
+                <p>СКВ помогает поддерживать стабильность проекта, разделяя его на версии и облегчая переход от одной версии к другой. 
+                    Это важно для тестирования и выпуска новых релизов, поскольку позволяет управлять, 
+                    какая версия проекта используется в производственной среде, а какая — в разработке.</p>
+            </div>
+
+            <div class="task-item">
+                <h5>Совместная работа и улучшение координации</h5>
+                <p>СКВ помогает скоординировать действия разработчиков, давая им работать над проектом, не опасаясь случайных конфликтов или потери данных. 
+                    Все изменения синхронизируются, и каждый участник проекта всегда имеет актуальную версию кода.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer"> 
+        <div class="footer-content">
+            © 2025 Гербулов Р.В.
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVN - Система контроля версий</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #121212; 
+            color: #e0e0e0; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        main {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            color: #ffffff;
+        }
+
+        .collection {
+            border-color: #424242;
+        }
+        .collection .collection-item {
+            background-color: #212121;
+            border-color: #424242;
+        }
+        .collection .collection-item a {
+            color: #bb86fc; 
+        }
+        .collection .collection-item a:hover {
+            color: #e3d2f7;
+        }
+
+        table.striped > tbody > tr {
+            border-bottom: none; 
+        }
+
+        table.striped > tbody > tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
+        
+        code {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-block {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .main-content {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+        }
+        
+        .content-wrapper {
+            padding: 0 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        
+        .page-footer {
+            width: 100%;
+            margin-top: auto;
+            background-color: #121212 !important;
+        }
+        
+        .footer-content {
+            text-align: center;
+            padding: 20px 0;
+            color: #e0e0e0;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        ul:not(.browser-default) {
+            padding-left: 0;
+        }
+        
+        ul:not(.browser-default) > li {
+            list-style-type: none;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        ul:not(.browser-default) > li:before {
+            content: "•";
+            color: #bb86fc;
+            position: absolute;
+            left: 0;
+        }
+        
+        .feature-card {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #bb86fc;
+        }
+        
+        .svn-logo {
+            color: #8094b8;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        /* Стили для компактного сайдбара */
+        .page-nav {
+            position: sticky;
+            top: 100px;
+            align-self: start;
+        }
+        
+        .page-nav-content {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .page-nav-title {
+            color: #bb86fc;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-links li {
+            margin-bottom: 6px;
+        }
+        
+        .nav-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .nav-links a:hover {
+            background: rgba(187, 134, 252, 0.08);
+            color: #e3d2f7;
+            border-color: rgba(187, 134, 252, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .nav-links a.active {
+            background: rgba(187, 134, 252, 0.12);
+            color: #bb86fc;
+            border-color: rgba(187, 134, 252, 0.5);
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(187, 134, 252, 0.2);
+        }
+        
+        .content-main {
+            min-width: 0;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 240px 1fr;
+                gap: 40px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .page-nav {
+                position: static;
+                order: -1;
+            }
+            
+            .page-nav-content {
+                background: rgba(30, 30, 30, 0.8);
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid #333;
+            }
+            
+            .nav-links {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0;
+            }
+            
+            .nav-links a {
+                text-align: center;
+                padding: 12px;
+            }
+            
+            .nav-links a:hover {
+                transform: translateY(-2px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                gap: 20px;
+            }
+            
+            .nav-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links a {
+                padding: 14px;
+            }
+        }
+
+        /* Улучшения для основного контента */
+        .content-main h3 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-top: 2.5rem;
+        }
+
+        .content-main h3:first-of-type {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="indigo darken-3">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo center"></a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="git.html">Git</a></li>
+                <li><a href="svn.html">SVN</a></li>
+                <li><a href="mercurial.html">Mercurial</a></li>
+                <li><a href="comparison.html">Сравнение</a></li>
+                <li><a href="video.html">Видео</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="git.html">Git</a></li>
+        <li><a href="svn.html">SVN</a></li>
+        <li><a href="mercurial.html">Mercurial</a></li>
+        <li><a href="comparison.html">Сравнение</a></li>
+        <li><a href="install.html">Установка</a></li>
+        <li><a href="video.html">Видео</a></li>
+    </ul>
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Компактный сайдбар навигации -->
+            <aside class="page-nav">
+                <div class="page-nav-content">
+                    <div class="page-nav-title">Содержание</div>
+                    <ul class="nav-links">
+                        <li><a href="#what-is-svn" class="active">Что такое SVN?</a></li>
+                        <li><a href="#key-features">Ключевые особенности</a></li>
+                        <li><a href="#basic-commands">Основные команды</a></li>
+                        <li><a href="#workflow">Рабочий процесс</a></li>
+                        <li><a href="#architecture">Архитектура репозитория</a></li>
+                        <li><a href="#advantages">Преимущества</a></li>
+                        <li><a href="#comparison">Сравнение с Git</a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Основной контент -->
+            <div class="content-main">
+                <h1><span class="svn-logo">SVN</span> - Apache Subversion</h1>
+                
+                <div class="feature-card" id="what-is-svn">
+                    <h3>Что такое SVN?</h3>
+                    <p><span class="svn-logo">Apache Subversion (SVN)</span> — это централизованная система контроля версий, созданная в 2000 году как замена CVS. SVN широко используется в корпоративной среде благодаря своей стабильности, простоте и надежности.</p>
+                </div>
+
+                <h3 id="key-features">Ключевые особенности SVN</h3>
+                
+                <div class="feature-card">
+                    <h5>Централизованная архитектура</h5>
+                    <p>В отличие от распределенных систем, SVN использует центральный сервер, который содержит всю историю изменений. Это обеспечивает:</p>
+                    <ul>
+                        <li>Централизованное управление доступом</li>
+                        <li>Единую точку истины для проекта</li>
+                        <li>Простое администрирование</li>
+                        <li>Строгий контроль версий</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h5>Версионность директорий и метаданных</h5>
+                    <p>SVN отслеживает изменения не только файлов, но и директорий, а также метаданных:</p>
+                    <ul>
+                        <li>Переименование файлов и папок с сохранением истории</li>
+                        <li>Версионность свойств файлов</li>
+                        <li>Полная история структурных изменений</li>
+                        <li>Атомарные коммиты</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h5>Поддержка бинарных файлов</h5>
+                    <p>SVN эффективно работает с бинарными файлами, что делает его популярным выбором для:</p>
+                    <ul>
+                        <li>Проектов с графическими ресурсами</li>
+                        <li>Документации в бинарных форматах</li>
+                        <li>Мультимедийных проектов</li>
+                        <li>Игровой разработки</li>
+                    </ul>
+                </div>
+
+                <h3 id="basic-commands">Основные команды SVN</h3>
+                
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th>Команда</th>
+                            <th>Описание</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>svn checkout</code></td>
+                            <td>Создание рабочей копии репозитория</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn update</code></td>
+                            <td>Обновление рабочей копии до последней версии</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn add</code></td>
+                            <td>Добавление файлов под контроль версий</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn commit</code></td>
+                            <td>Сохранение изменений в репозитории</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn status</code></td>
+                            <td>Просмотр состояния файлов в рабочей копии</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn diff</code></td>
+                            <td>Просмотр различий между версиями</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn log</code></td>
+                            <td>Просмотр истории изменений</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn merge</code></td>
+                            <td>Слияние изменений из разных веток</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn copy</code></td>
+                            <td>Создание ветки или тега</td>
+                        </tr>
+                        <tr>
+                            <td><code>svn switch</code></td>
+                            <td>Переключение между ветками</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 id="workflow">Типичный рабочий процесс в SVN</h3>
+                
+                <div class="code-block">
+                    <code>
+# Создание рабочей копии<br>
+svn checkout https://svn.example.com/repo/trunk my-project<br>
+<br>
+# Переход в директорию проекта<br>
+cd my-project<br>
+<br>
+# Внесение изменений в файлы<br>
+# ...<br>
+<br>
+# Проверка статуса изменений<br>
+svn status<br>
+<br>
+# Просмотр различий<br>
+svn diff<br>
+<br>
+# Добавление новых файлов<br>
+svn add new-file.txt<br>
+<br>
+# Сохранение изменений в репозитории<br>
+svn commit -m "Добавлена новая функциональность"<br>
+<br>
+# Обновление рабочей копии<br>
+svn update<br>
+<br>
+# Создание ветки для новой функции<br>
+svn copy https://svn.example.com/repo/trunk https://svn.example.com/repo/branches/new-feature -m "Создание ветки для новой функции"
+                    </code>
+                </div>
+
+                <h3 id="architecture">Архитектура SVN репозитория</h3>
+                
+                <div class="feature-card">
+                    <h5>Стандартная структура директорий</h5>
+                    <ul>
+                        <li><strong>trunk</strong> - основная ветка разработки</li>
+                        <li><strong>branches</strong> - ветки для разработки функций и исправлений</li>
+                        <li><strong>tags</strong> - метки для релизов и важных состояний</li>
+                    </ul>
+                    <p>Такая структура обеспечивает организованный workflow и упрощает управление версиями проекта.</p>
+                </div>
+
+                <h3 id="advantages">Преимущества SVN</h3>
+                
+                <div class="feature-card">
+                    <ul>
+                        <li>Простота обучения и использования</li>
+                        <li>Централизованное управление доступом</li>
+                        <li>Эффективная работа с бинарными файлами</li>
+                        <li>Атомарные операции коммита</li>
+                        <li>Стабильность и надежность</li>
+                        <li>Хорошая интеграция с IDE</li>
+                        <li>Подробный контроль разрешений</li>
+                    </ul>
+                </div>
+
+                <h3 id="comparison">Сравнение с Git</h3>
+                
+                <div class="feature-card">
+                    <h5>Когда выбрать SVN вместо Git?</h5>
+                    <ul>
+                        <li>Корпоративные проекты с централизованным управлением</li>
+                        <li>Проекты с большим количеством бинарных файлов</li>
+                        <li>Команды, привыкшие к централизованной модели</li>
+                        <li>Проекты, требующие строгого контроля доступа</li>
+                        <li>Когда важна простота администрирования</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer"> 
+        <div class="footer-content">
+            © 2025 Гербулов Р.В.
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация мобильной навигации
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+            
+            // Плавная прокрутка для навигации
+            document.querySelectorAll('.nav-links a').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Подсветка активного раздела при прокрутке
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('h3, .feature-card');
+                const navItems = document.querySelectorAll('.nav-links a');
+                
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 120;
+                    if (window.scrollY >= sectionTop) {
+                        currentSection = '#' + section.getAttribute('id');
+                    }
+                });
+                
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

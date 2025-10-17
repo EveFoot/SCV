@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сравнение систем контроля версий</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #121212; 
+            color: #e0e0e0; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        main {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            color: #ffffff;
+        }
+
+        .collection {
+            border-color: #424242;
+        }
+        .collection .collection-item {
+            background-color: #212121;
+            border-color: #424242;
+        }
+        .collection .collection-item a {
+            color: #bb86fc; 
+        }
+        .collection .collection-item a:hover {
+            color: #e3d2f7;
+        }
+
+        table.striped > tbody > tr {
+            border-bottom: none; 
+        }
+
+        table.striped > tbody > tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
+        
+        code {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .main-content {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+        }
+        
+        .content-wrapper {
+            padding: 0 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+        
+        .page-footer {
+            width: 100%;
+            margin-top: auto;
+            background-color: #121212 !important;
+        }
+        
+        .footer-content {
+            text-align: center;
+            padding: 20px 0;
+            color: #e0e0e0;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        ul:not(.browser-default) {
+            padding-left: 0;
+        }
+        
+        ul:not(.browser-default) > li {
+            list-style-type: none;
+            padding-left: 1rem;
+            position: relative;
+        }
+        
+        ul:not(.browser-default) > li:before {
+            content: "•";
+            color: #bb86fc;
+            position: absolute;
+            left: 0;
+        }
+        
+        .comparison-card {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #bb86fc;
+        }
+        
+        .feature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .feature-table th {
+            background-color: #2d2d2d;
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #424242;
+        }
+        
+        .feature-table td {
+            padding: 12px;
+            border: 1px solid #424242;
+            vertical-align: top;
+        }
+        
+        .feature-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .good {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .average {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .poor {
+            color: #f44336;
+            font-weight: bold;
+        }
+        
+        .system-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 2px;
+        }
+        
+        .git-badge {
+            background-color: #f14e32;
+            color: white;
+        }
+        
+        .svn-badge {
+            background-color: #8094b8;
+            color: white;
+        }
+        
+        .hg-badge {
+            background-color: #5c89cc;
+            color: white;
+        }
+        
+        /* Стили для компактного сайдбара */
+        .page-nav {
+            position: sticky;
+            top: 100px;
+            align-self: start;
+        }
+        
+        .page-nav-content {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .page-nav-title {
+            color: #bb86fc;
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-links li {
+            margin-bottom: 6px;
+        }
+        
+        .nav-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            display: block;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .nav-links a:hover {
+            background: rgba(187, 134, 252, 0.08);
+            color: #e3d2f7;
+            border-color: rgba(187, 134, 252, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .nav-links a.active {
+            background: rgba(187, 134, 252, 0.12);
+            color: #bb86fc;
+            border-color: rgba(187, 134, 252, 0.5);
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(187, 134, 252, 0.2);
+        }
+        
+        .content-main {
+            min-width: 0;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 240px 1fr;
+                gap: 40px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .page-nav {
+                position: static;
+                order: -1;
+            }
+            
+            .page-nav-content {
+                background: rgba(30, 30, 30, 0.8);
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid #333;
+            }
+            
+            .nav-links {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0;
+            }
+            
+            .nav-links a {
+                text-align: center;
+                padding: 12px;
+            }
+            
+            .nav-links a:hover {
+                transform: translateY(-2px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                gap: 20px;
+            }
+            
+            .nav-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links a {
+                padding: 14px;
+            }
+        }
+
+        /* Улучшения для основного контента */
+        .content-main h3 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-top: 2.5rem;
+        }
+
+        .content-main h3:first-of-type {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="indigo darken-3">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo center"></a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            
+            <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="git.html">Git</a></li>
+                <li><a href="svn.html">SVN</a></li>
+                <li><a href="mercurial.html">Mercurial</a></li>
+                <li><a href="comparison.html">Сравнение</a></li>
+                <li><a href="video.html">Видео</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="index.html">Главная</a></li>
+        <li><a href="git.html">Git</a></li>
+        <li><a href="svn.html">SVN</a></li>
+        <li><a href="mercurial.html">Mercurial</a></li>
+        <li><a href="comparison.html">Сравнение</a></li>
+        <li><a href="install.html">Установка</a></li>
+        <li><a href="video.html">Видео</a></li>
+    </ul>
+    
+    <main class="main-content">
+        <div class="content-wrapper">
+            <!-- Компактный сайдбар навигации -->
+            <aside class="page-nav">
+                <div class="page-nav-content">
+                    <div class="page-nav-title">Содержание</div>
+                    <ul class="nav-links">
+                        <li><a href="#overview" class="active">Обзор СКВ</a></li>
+                        <li><a href="#comparison-table">Сравнительная таблица</a></li>
+                        <li><a href="#recommendations">Рекомендации</a></li>
+                        <li><a href="#performance">Производительность</a></li>
+                        <li><a href="#conclusion">Заключение</a></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Основной контент -->
+            <div class="content-main">
+                <h1>Сравнение систем контроля версий</h1>
+                
+                <div class="comparison-card" id="overview">
+                    <h3>Обзор популярных СКВ</h3>
+                    <p>На этой странице представлено сравнение трех наиболее популярных систем контроля версий: <span class="system-badge git-badge">Git</span>, <span class="system-badge svn-badge">SVN</span> и <span class="system-badge hg-badge">Mercurial</span>. Каждая из них имеет свои преимущества и особенности, которые делают их более подходящими для определенных сценариев использования.</p>
+                </div>
+
+                <h3 id="comparison-table">Сравнительная таблица</h3>
+                
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Характеристика</th>
+                            <th>Git</th>
+                            <th>SVN</th>
+                            <th>Mercurial</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Архитектура</strong></td>
+                            <td><span class="good">Распределенная</span></td>
+                            <td><span class="poor">Централизованная</span></td>
+                            <td><span class="good">Распределенная</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Скорость работы</strong></td>
+                            <td><span class="good">Очень высокая</span></td>
+                            <td><span class="average">Средняя</span></td>
+                            <td><span class="good">Высокая</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ветвление</strong></td>
+                            <td><span class="good">Легкое и быстрое</span></td>
+                            <td><span class="poor">Медленное</span></td>
+                            <td><span class="good">Легкое</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Кривая обучения</strong></td>
+                            <td><span class="poor">Крутая</span></td>
+                            <td><span class="good">Пологий</span></td>
+                            <td><span class="good">Пологий</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Работа offline</strong></td>
+                            <td><span class="good">Полная поддержка</span></td>
+                            <td><span class="poor">Ограниченная</span></td>
+                            <td><span class="good">Полная поддержка</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Размер сообщества</strong></td>
+                            <td><span class="good">Очень большое</span></td>
+                            <td><span class="average">Большое</span></td>
+                            <td><span class="poor">Среднее</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Интеграция с IDE</strong></td>
+                            <td><span class="good">Отличная</span></td>
+                            <td><span class="good">Хорошая</span></td>
+                            <td><span class="average">Средняя</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Безопасность</strong></td>
+                            <td><span class="good">Высокая</span></td>
+                            <td><span class="good">Высокая</span></td>
+                            <td><span class="good">Высокая</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Поддержка бинарных файлов</strong></td>
+                            <td><span class="average">Средняя</span></td>
+                            <td><span class="good">Хорошая</span></td>
+                            <td><span class="average">Средняя</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 id="recommendations">Рекомендации по выбору</h3>
+                
+                <div class="comparison-card">
+                    <h5>Когда выбрать Git?</h5>
+                    <ul>
+                        <li>Распределенные команды разработчиков</li>
+                        <li>Проекты с открытым исходным кодом</li>
+                        <li>Частое ветвление и слияние</li>
+                        <li>Необходимость работы в оффлайн-режиме</li>
+                        <li>Интеграция с современными CI/CD системами</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card">
+                    <h5>Когда выбрать SVN?</h5>
+                    <ul>
+                        <li>Корпоративные среды с централизованным управлением</li>
+                        <li>Проекты с большими бинарными файлами</li>
+                        <li>Команды, привыкшие к централизованному workflow</li>
+                        <li>Проекты, требующие строгого контроля доступа</li>
+                        <li>Когда важна простота обучения для новичков</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card">
+                    <h5>Когда выбрать Mercurial?</h5>
+                    <ul>
+                        <li>Проекты, требующие простоты использования</li>
+                        <li>Когда Git кажется слишком сложным</li>
+                        <li>Проекты с линейной историей разработки</li>
+                        <li>Команды, ценящие консистентность интерфейса</li>
+                        <li>Кроссплатформенная разработка</li>
+                    </ul>
+                </div>
+
+                <h3 id="performance">Производительность</h3>
+                
+                <table class="feature-table">
+                    <thead>
+                        <tr>
+                            <th>Операция</th>
+                            <th>Git</th>
+                            <th>SVN</th>
+                            <th>Mercurial</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Клонирование репозитория</strong></td>
+                            <td><span class="good">Быстро</span></td>
+                            <td><span class="poor">Медленно</span></td>
+                            <td><span class="good">Быстро</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Коммит изменений</strong></td>
+                            <td><span class="good">Мгновенно</span></td>
+                            <td><span class="average">Зависит от сети</span></td>
+                            <td><span class="good">Мгновенно</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Создание ветки</strong></td>
+                            <td><span class="good">Мгновенно</span></td>
+                            <td><span class="poor">Медленно</span></td>
+                            <td><span class="good">Мгновенно</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Слияние веток</strong></td>
+                            <td><span class="good">Быстро</span></td>
+                            <td><span class="poor">Медленно</span></td>
+                            <td><span class="good">Быстро</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Просмотр истории</strong></td>
+                            <td><span class="good">Быстро</span></td>
+                            <td><span class="average">Средне</span></td>
+                            <td><span class="good">Быстро</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 id="conclusion">Заключение</h3>
+                
+                <div class="comparison-card">
+                    <p>Выбор системы контроля версий зависит от конкретных потребностей проекта и команды:</p>
+                    <ul>
+                        <li><strong>Git</strong> - лучший выбор для большинства современных проектов благодаря своей производительности, гибкости и огромному сообществу</li>
+                        <li><strong>SVN</strong> - подходит для корпоративных сред и проектов с особыми требованиями к управлению доступом</li>
+                        <li><strong>Mercurial</strong> - отличная альтернатива для тех, кто ищет простоту использования распределенной системы контроля версий</li>
+                    </ul>
+                    <p>В конечном счете, лучшая система контроля версий - та, которую ваша команда будет использовать эффективно и последовательно.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer"> 
+        <div class="footer-content">
+            © 2025 Гербулов Р.В.
+        </div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация мобильной навигации
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+            
+            // Плавная прокрутка для навигации
+            document.querySelectorAll('.nav-links a').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Подсветка активного раздела при прокрутке
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('h3, .comparison-card');
+                const navItems = document.querySelectorAll('.nav-links a');
+                
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - 120;
+                    if (window.scrollY >= sectionTop) {
+                        currentSection = '#' + section.getAttribute('id');
+                    }
+                });
+                
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === currentSection) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
